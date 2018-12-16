@@ -6,6 +6,7 @@ import time
 import json
 from config import *
 
+
 class BtcFxDataGetter:
     varx = 1
 
@@ -54,7 +55,10 @@ class BtcFxDataGetter:
         time.sleep(1)
         print('Websocket connected')
 
+
+
 if __name__ == '__main__':
+    print('kita')
     thread = BtcFxDataGetter('FX_BTC_JPY')
     while thread.is_connected != True: 
         time.sleep(1)
@@ -62,3 +66,5 @@ if __name__ == '__main__':
     while True:
         print(bfrt.get())
 #        time.sleep(0.5)
+else:
+    print('lita')
