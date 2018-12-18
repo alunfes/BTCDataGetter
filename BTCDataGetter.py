@@ -59,14 +59,19 @@ class BtcFxDataGetter:
 
 
 if __name__ == '__main__':
-    thread = BtcFxDataGetter('FX_BTC_JPY')
+    bfd = BtcFxDataGetter('FX_BTC_JPY')
     num_failed = 0
-    # while thread.is_connected != True or num_failed < 10: 
-    #     time.sleep(1)
-    #     print('connecting...')
-    #     num_failed +=1
-    while True:
-        print(thread.get())
-        time.sleep(0.5)
+
+
+    while bfd.is_connected() != True or num_failed < 10: 
+         time.sleep(1)
+         print('connecting...', bfd.is_connected())
+         num_failed +=1
+         if(bfd.is_connected()==True):
+             while True:
+                print(bfd.get())
+                time.sleep(0.5)
+    bfd.disconnect()
+    self.thread.close()
 else:
     print('lita')
