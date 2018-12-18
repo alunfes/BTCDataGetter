@@ -21,6 +21,7 @@ class BtcFxDataGetter:
             on_open = self.on_open, on_message = self.on_message,
             on_error = self.on_error, on_close = self.on_close)
         self.ws.keep_running = True 
+        websocket.enableTrace(True)
         self.thread = threading.Thread(target=lambda: self.ws.run_forever())
         self.thread.daemon = True
         self.thread.start()
@@ -58,13 +59,14 @@ class BtcFxDataGetter:
 
 
 if __name__ == '__main__':
-    print('kita')
     thread = BtcFxDataGetter('FX_BTC_JPY')
-    while thread.is_connected != True: 
-        time.sleep(1)
-        print('connecting...')
+    num_failed = 0
+    # while thread.is_connected != True or num_failed < 10: 
+    #     time.sleep(1)
+    #     print('connecting...')
+    #     num_failed +=1
     while True:
-        print(bfrt.get())
-#        time.sleep(0.5)
+        print(thread.get())
+        time.sleep(0.5)
 else:
     print('lita')
