@@ -10,9 +10,10 @@ from config import *
 class BtcFxDataGetter:
     varx = 1
 
-    def __init__(self, symbol):
+    def __init__(self, channel, symbol):
         self.symbol = symbol
         self.ticker = None
+        self.channel = channel
         self.connect()
 
     def connect(self):
@@ -52,16 +53,38 @@ class BtcFxDataGetter:
 
     def on_open(self, ws):
         ws.send(json.dumps( {'method':'subscribe',
-            'params':{'channel':'lightning_ticker_' + self.symbol}} ))
+            'params':{'channel':self.channel + self.symbol}} ))
         time.sleep(1)
         print('Websocket connected')
 
 
 
+
 if __name__ == '__main__':
-    bfd = BtcFxDataGetter('FX_BTC_JPY')
+
+    bfd = BtcFxDataGetter('lightning_executions_','FX_BTC_JPY')
     num_failed = 0
 
+    while bfd.is_connected() != True or num_failed < 10: 
+         time.sleep(1)
+         print('connecting...', bfd.is_connected())
+         num_failed +=1
+         if(bfd.is_connected()==True):
+             while True:
+                #print(bfd.get())
+                data = bfd.get()
+                if data is not None:
+                    side = data[0]['side']
+                    price = data[0]['price']
+                    size = data[0]['size']
+                    print('side={}, price={}, size={}'.format(side, price, size))
+                #time.sleep(0.5)
+    bfd.disconnect()
+    self.thread.close()
+
+
+    """ bfd = BtcFxDataGetter('lightning_ticker_','FX_BTC_JPY')
+    num_failed = 0
 
     while bfd.is_connected() != True or num_failed < 10: 
          time.sleep(1)
@@ -70,8 +93,16 @@ if __name__ == '__main__':
          if(bfd.is_connected()==True):
              while True:
                 print(bfd.get())
+                data = bfd.get()
+                if data is not None:
+                    bid = data['best_bid']
+                    ask = data['best_ask']
+                    spread = ask - bid
+                    print('spread={}, ask={}, bid={}'.format(spread,ask,bid))
                 time.sleep(0.5)
     bfd.disconnect()
-    self.thread.close()
+    self.thread.close() """
+
+
 else:
     print('lita')
