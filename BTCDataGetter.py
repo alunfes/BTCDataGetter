@@ -4,7 +4,9 @@ import websocket
 import threading
 import time
 import json
+import sqlite3
 from config import *
+import BTCData.py
 
 
 class BtcFxDataGetter:
@@ -41,6 +43,7 @@ class BtcFxDataGetter:
     def on_message(self, ws, message):
         message = json.loads(message)['params']
         self.ticker = message['message']
+        BTCData.BTCExecutionData.addExecution(self.ticker)
 
     def on_error(self, ws, error):
         print('error')
@@ -57,6 +60,14 @@ class BtcFxDataGetter:
         time.sleep(1)
         print('Websocket connected')
 
+    #def createDB():
+    #    con = sqlite3.connect('FXBTC.db')
+    #    cursor = con.cursor()
+    #    cursor.executescript("""DROP TABLE IF EXISTS executions;CREATE TABLE executions(id, side, price, size, exec_date, buy_id, sell_id)""")
+        #cursor.execute("CREATE TABLE executions(id, side, price, size, exec_date, buy_id, sell_id)")
+
+
+
 
 
 
@@ -71,12 +82,13 @@ if __name__ == '__main__':
          num_failed +=1
          if(bfd.is_connected()==True):
              while True:
-                #print(bfd.get())
+                print(bfd.get())
                 data = bfd.get()
                 if data is not None:
                     side = data[0]['side']
                     price = data[0]['price']
                     size = data[0]['size']
+
                     print('side={}, price={}, size={}'.format(side, price, size))
                 #time.sleep(0.5)
     bfd.disconnect()
