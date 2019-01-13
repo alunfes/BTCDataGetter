@@ -6,7 +6,7 @@ import time
 import json
 import sqlite3
 from config import *
-import BTCData.py
+import BTCData
 
 
 class BtcFxDataGetter:
@@ -43,7 +43,8 @@ class BtcFxDataGetter:
     def on_message(self, ws, message):
         message = json.loads(message)['params']
         self.ticker = message['message']
-        BTCData.BTCExecutionData.addExecution(self.ticker)
+        if self.ticker is not None:
+            BTCData.BTCExecutionData.addExecution(dict(self.ticker[0]))
 
     def on_error(self, ws, error):
         print('error')
@@ -117,4 +118,4 @@ if __name__ == '__main__':
 
 
 else:
-    print('lita')
+    print('called as a module')

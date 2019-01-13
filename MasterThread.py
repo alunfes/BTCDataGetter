@@ -1,11 +1,13 @@
-import BTCDataGetter.py
-import DBWriter.py
+import BTCDataGetter
+import DBWriter
 import asyncio
+import BTCData
 
 class MasterThread:
 
     @classmethod
-    def start(self):
+    async def start(cls):
+        BTCData.BTCExecutionData.initialize()
         bfd = BTCDataGetter.BtcFxDataGetter('lightning_executions_','FX_BTC_JPY')
         dw = DBWriter.DBWriter()
         await dw.testHello()
@@ -16,7 +18,9 @@ class MasterThread:
             num_failed +=1
             while bfd.is_connected():
                 await dw.testCall()
-    bfd.disconnect()
+        bfd.disconnect()
 
 
-MasterThread.start()
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(MasterThread.start())
